@@ -49,9 +49,7 @@ if [[ ${#_ft_default_ruby[@]} -eq 0 ]]; then
   return 1
 elif [[ ${#_ft_default_ruby[@]} -gt 1 ]]; then
   echo "Error: the default ruby \$FT_DEFAULT_RUBY ($FT_DEFAULT_RUBY) is ambiguous: it matches each of"
-  for r in "${_ft_default_ruby[@]}"; do
-    echo "$r"
-  done
+  for r in "${_ft_default_ruby[@]}"; do echo "$r"; done
   return 1
 fi
 export PATH="${_ft_default_ruby[0]}/bin:$PATH"
@@ -92,9 +90,7 @@ _ft_set_ruby() {
   elif [[ ${#ruby[@]} -gt 1 ]]; then
     echo "Error: ambiguous ruby \"$pattern\": the following rubies all matched"
     local r
-    for r in "${ruby[@]}"; do
-      basename "$r"
-    done
+    for r in "${ruby[@]}"; do basename "$r"; done
   elif [[ "$(dirname "$current")" != "${ruby[0]}" ]]; then
     echo -e "\033[01;32mNow using ruby $(basename "$ruby").\033[39m"
     replace_path PATH "$PATH" "$current" "$ruby/bin"
@@ -124,9 +120,7 @@ _ft_set_from_project_file() {
     fi
   else # > 1 project files
     echo "Error: more than 1 matching flip-the-tables project files found in $1:"
-    for f in "${project_files[@]}"; do
-      echo "$f"
-    done
+    for f in "${project_files[@]}"; do echo "$f"; done
   fi
 }
 
