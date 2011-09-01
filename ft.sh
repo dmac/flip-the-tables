@@ -46,11 +46,17 @@ _ft_ruby_list() {
 _ft_set_ruby() {
   local current=$1
   local pattern=$2
-  local ruby=$(find "$RUBIES" -type d -d 1 -name "${pattern}*" | head -1)
-  if [[ -z "$ruby" ]]; then
-    echo "Error: No Ruby matched $pattern."
-  elif [[ "$(dirname "$current")" != "$ruby" ]]; then
-    echo -e "\033[01;32mSwitching to Ruby $(basename "$ruby").\033[39m"
+  local ruby=( $(find "$RUBIES" -type d -d 1 -name "${pattern}*") )
+  if [[ ${#ruby[@]} -eq 0 ]]; then
+    echo "Error: No ruby matched $pattern."
+  elif [[ ${#ruby[@]} -gt 1 ]]; then
+    echo "Error: ambiguous ruby \"$pattern\": the following rubies all matched"
+    local r
+    for r in ${ruby[@]}; do
+      basename "$r"
+    done
+  elif [[ "$(dirname "$current")" != "${ruby[0]}" ]]; then
+    echo -e "\033[01;32mSwitching to ruby $(basename "$ruby").\033[39m"
     replace_path PATH "$PATH" "$current" "$ruby/bin"
   fi
 }
