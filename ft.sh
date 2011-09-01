@@ -18,10 +18,10 @@
 #   $3 the precise string to be removed/replaced
 #   $4 the replacement string (use "" for removal)
 replace_path() {
-  path=$1
-  list=$2
-  remove=$3
-  replace=$4 # Allowed to be empty or unset
+  local path=$1
+  local list=$2
+  local remove=$3
+  local replace=$4 # Allowed to be empty or unset
   export $path="$(echo "$list" | tr ":" "\n" | sed "s:^$remove\$:$replace:" | tr "\n" ":" | sed 's|:$||')"
 }
 
@@ -44,9 +44,9 @@ _ft_ruby_list() {
 
 # Swap out ruby versions by replacing $RUBIES/<ruby1>/bin with $RUBIES/<ruby2>/bin
 _ft_set_ruby() {
-  current=$1
-  pattern=$2
-  ruby=$(find "$RUBIES" -type d -d 1 -name "${pattern}*" | head -1)
+  local current=$1
+  local pattern=$2
+  local ruby=$(find "$RUBIES" -type d -d 1 -name "${pattern}*" | head -1)
   if [[ -z "$ruby" ]]; then
     echo "Error: No Ruby matched $pattern."
   elif [[ "$(dirname "$current")" != "$ruby" ]]; then
@@ -61,12 +61,27 @@ _ft_help() {
   echo 'The tab-completion should be a good hint :)'
 }
 
+shopt -s progcomp
+
+_ft_complete_list() {
+  local option
+  for option in $(_ft_ruby_list); do echo "$option"; done
+  for option in version short-version list help; do echo $option; done
+}
+
+_ft_completion() {
+  COMPREPLY=()
+  local current_word=${COMP_WORDS[COMP_CWORD]}
+  COMPREPLY=($(compgen -W '$(_ft_complete_list)' -- $current_word))
+  return 0
+}
+
 ft() {
   if [[ "$#" -ne 1 ]]; then
     _ft_help
   else
-    current=$(echo "$PATH" | tr ":" "\n" | grep -m 1 "^$RUBIES/.*/bin/\?\$")
-    current_short=$(basename $(dirname "$current"))
+    local current=$(echo "$PATH" | tr ":" "\n" | grep -m 1 "^$RUBIES/.*/bin/\?\$")
+    local current_short=$(basename $(dirname "$current"))
     if [[ -z "$current" ]]; then
       echo 'Error: not currently using Ruby in $RUBIES.'
     else
@@ -78,6 +93,7 @@ ft() {
         short-version) printf "$current_short"
           ;;
         list)
+          local ruby
           for ruby in $(_ft_ruby_list); do
             if [[ "$current_short" = "$ruby" ]]; then
               echo "* $ruby"
@@ -92,3 +108,5 @@ ft() {
     fi
   fi
 }
+
+complete -F _ft_completion ft

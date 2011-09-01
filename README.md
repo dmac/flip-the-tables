@@ -7,6 +7,9 @@ versions should be a trivial task best solved in the simplest manner possible. I
 [this blog post](http://chris.mowforth.com/si-because-rvm-and-rbenv-are-overkill), although I am using a very
 different approach.
 
+*NOTE: I hacked this up in an hour very late one night. I haven't gone through and scrubbed it. If it breaks
+everything you love, it's not my fault.*
+
 Design goals
 ------------
 
@@ -45,6 +48,22 @@ from `ft help`, so it should be pretty easy to figure out.
 * `ft version` and `ft short-version` show the current Ruby (the second might be useful in a bash prompt)
 * `ft list` shows all available Rubies and indicates which is currently in use
 * `ft 1.9` switches to the first ruby version starting with '1.9' (on my machine, 1.9.2-p290)
+
+Project-specific rubies
+-----------------------
+
+You can drop a file named `.ft_ruby_<version>` (example: `.ft_ruby_1.9`) in your project root. If you cd to
+any directory at or below this, `ft` will automatically switch that the indicated Ruby. (Note that this does
+partial matching on the version, just like the normal `ft` command).
+
+NOTE: unimplemented.
+
+Notes
+-----
+
+* This won't play nicely with RVM or rbenv.
+* ft will complain if you have `$GEM_HOME` or `$GEM_PATH` set, because it's preferable to have separate gems
+  for each Ruby.
 
 FAQ
 ---
