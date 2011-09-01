@@ -7,8 +7,8 @@ versions should be a trivial task best solved in the simplest manner possible. I
 [this blog post](http://chris.mowforth.com/si-because-rvm-and-rbenv-are-overkill), although I am using a very
 different approach.
 
-*NOTE: I hacked this up in an hour very late one night. I haven't gone through and scrubbed it. If it breaks
-everything you love, it's not my fault.*
+**NOTE: I hacked this up in an hour very late one night. I haven't gone through and scrubbed it. If it breaks
+everything you love, it's not my fault.**
 
 Design goals
 ------------
@@ -17,7 +17,7 @@ Design goals
 * I want the ruby version to stay the same in my shell until I change it, and I want to change my version
   without affecting other shells
 * I don't want to override any common shell functions or replace `ruby`, `irb`, `gem`, etc with shell shims
-* I want ruby switching to be _fast_
+* I want ruby switching to be *fast*
 * I want as few lines of bash as possible, because bash scripting sucks
 
 Installation
