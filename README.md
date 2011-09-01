@@ -20,6 +20,33 @@ Design goals
 * I want ruby switching to be *fast*
 * I want as few lines of bash as possible, because bash scripting sucks
 
+Features
+--------
+
+* Hit all design goals
+
+How it works
+------------
+
+You don't have to understand how flip-the-tables works, but it's quite simple and knowing what it's doing may
+make it easier to use.
+
+Fundamentally, flip-the-tables just manipulates your `$PATH`. Ruby versions are just the names of
+subdirectories of `$RUBIES`. When you type `ft 1.9`, flip-the-tables does the following:
+
+* Check to make sure that there is some entry of the form `$RUBIES/<ruby-version>/bin` in your `$PATH`
+* Check to see that `1.9` is an unambiguous prefix of a directory in `$RUBIES`
+* In your path, `$RUBIES/<ruby-version>/bin` is replaced with `$RUBIES/1.9<blah>/bin`
+
+Project-specific ruby versions work in the following manner:
+
+* When you move to a new directoy (this is checked by a hook in `$PROMPT_COMMAND`), we check for a file
+  called `.ft_ruby_<version>` where version is just like a string you might give to `ft` (e.g. "1.9").
+* If such a file exists, switch rubies in the same manner as above.
+* Recursively repeat this process for all ancestor directories until a file is found or we reach `/`.
+
+That's all, folks!
+
 Installation
 ------------
 
@@ -31,11 +58,11 @@ Next, download `ft.sh` from this repo and put it somewhere on your machine. Add 
 `.bash_profile` or `.bashrc`:
 
     export RUBIES=$HOME/.rubies
-    export PATH=$RUBIES/1.9.2-p290/bin:$PATH
+    export FT_DEFAULT_RUBY='1.9.2-p290'
     source ~/path/to/ft.sh
 
 Notice that in the first line you should substitute your chosen location, and in the second you should
-substitute the path to your desired default Ruby.
+substitute your desired default Ruby.
 
 Open up a new shell or source your rc files and you're all set.
 
@@ -43,7 +70,7 @@ Usage
 -----
 
 You use flip-the-tables by making use of the `ft` function. It includes tab completion and help (accessible
-from `ft help`, so it should be pretty easy to figure out.
+from `ft help`), so it should be pretty easy to figure out.
 
 * `ft version` and `ft short-version` show the current Ruby (the second might be useful in a bash prompt)
 * `ft list` shows all available Rubies and indicates which is currently in use
@@ -56,7 +83,8 @@ You can drop a file named `.ft_ruby_<version>` (example: `.ft_ruby_1.9`) in your
 any directory at or below this, `ft` will automatically switch that the indicated Ruby. (Note that this does
 partial matching on the version, just like the normal `ft` command).
 
-NOTE: unimplemented.
+When you switch out of such a directory tree, flip-the-tables automatically switches back to your default ruby
+(`$FT_DEFAULT_RUBY`).
 
 Notes
 -----
