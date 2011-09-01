@@ -50,6 +50,10 @@ That's all, folks!
 Installation
 ------------
 
+First, make sure you have GNU readlink installed. If you're running some flavor of Linux, you should be good;
+if you're running Mac OS, you should install greadlink (e.g. `brew install coreutils` or `port install
+coreutils`). The BSD readlink will not work with flip-the-tables.
+
 Decide where to keep your rubies (I'll assume `~/.rubies`). This will be `$RUBIES`. In that directory, install
 your ruby versions using Sam Stephenson's excellent [ruby-build](https://github.com/sstephenson/ruby-build).
 They should each be in folders with their names; e.g. `1.9.2-p290/`.
