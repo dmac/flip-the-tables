@@ -56,6 +56,20 @@ elif [[ ${#_ft_default_ruby[@]} -gt 1 ]]; then
 fi
 export PATH="${_ft_default_ruby[0]}/bin:$PATH"
 
+# Get a usable readlink
+export _ft_readlink=readlink
+(${_ft_readlink} -f . > /dev/null 2>&1) || export _ft_readlink=greadlink
+(${_ft_readlink} -f . > /dev/null 2>&1) || export _ft_readlink=""
+if [[ -z "${_ft_readlink}" ]]; then
+  echo "Error: no usable readlink found."
+  echo
+  echo "If you are on Mac OS X, install greadlink:"
+  echo '$ brew install coreutils'
+  echo "or"
+  echo '$ sudo port install coreutils'
+  return 1
+fi
+
 # Get the full list of versions
 _ft_ruby_list() {
   echo $(for f in $(find "$RUBIES" -type d -d 1); do basename "$f"; done)
@@ -65,6 +79,7 @@ _ft_ruby_list() {
 _ft_set_ruby() {
   local current="$1"
   local pattern="$2"
+  local change_reason=$3
   if [[ -z "$current" ]]; then
     current="$(echo "$PATH" | tr ":" "\n" | grep -m 1 "^$RUBIES/.*/bin/\?\$")"
   fi
@@ -83,6 +98,7 @@ _ft_set_ruby() {
   elif [[ "$(dirname "$current")" != "${ruby[0]}" ]]; then
     echo -e "\033[01;32mNow using ruby $(basename "$ruby").\033[39m"
     replace_path PATH "$PATH" "$current" "$ruby/bin"
+    export _ft_change_reason=$3
   fi
 }
 
@@ -90,14 +106,22 @@ _ft_set_from_project_file() {
   local project_files=( $(find "$1" -type f -maxdepth 1 -name "\.ft_ruby_*") )
   if [[ ${#project_files[@]} -eq 0 ]]; then
     if [[ "$1" = "/" ]]; then
-      _ft_set_ruby
+      # Only switch back to the default if the current Ruby wasn't specified manually
+      if [[ "${_ft_change_reason}" != "manual" ]]; then
+        _ft_set_ruby
+        export _ft_project_file=""
+      fi
     else
       _ft_set_from_project_file "$(dirname "$1")"
     fi
   elif [[ ${#project_files[@]} -eq 1 ]]; then
-    local file="$(basename "${project_files[0]}")"
-    echo "Using flip-the-tables project file $1/$file"
-    _ft_set_ruby "" "${file#\.ft_ruby_}"
+    local full_project_file="$(${_ft_readlink} -f "${project_files[0]}")"
+    if [[ "${full_project_file}" != "${_ft_project_file}" ]]; then
+      local file="$(basename "${project_files[0]}")"
+      echo "Using flip-the-tables project file $1/$file"
+      _ft_set_ruby "" "${file#\.ft_ruby_}" "file"
+      export _ft_project_file="${full_project_file}"
+    fi
   else # > 1 project files
     echo "Error: more than 1 matching flip-the-tables project files found in $1:"
     for f in "${project_files[@]}"; do
@@ -162,7 +186,7 @@ ft() {
             fi
           done
           ;;
-        *) _ft_set_ruby "$current" "$1"
+        *) _ft_set_ruby "$current" "$1" "manual"
           ;;
       esac
     fi
