@@ -70,7 +70,7 @@ fi
 
 # Get the full list of versions
 _ft_ruby_list() {
-  echo $(for f in $(find "$RUBIES" -type d -d 1); do basename "$f"; done)
+  echo $(for f in $(find "$RUBIES" -maxdepth 1 -type d | grep -v "$RUBIES$"); do basename "$f"; done)
 }
 
 # Swap out ruby versions by replacing $RUBIES/<ruby1>/bin with $RUBIES/<ruby2>/bin
