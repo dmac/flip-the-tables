@@ -43,7 +43,7 @@ if [[ -z "$FT_DEFAULT_RUBY" ]]; then
 fi
 
 # Push the flip-the-tables ruby to the front of the path
-_ft_default_ruby=( $(find "$RUBIES" -type d -maxdepth 1 -name "${FT_DEFAULT_RUBY}*") )
+_ft_default_ruby=( $(find "$RUBIES" -maxdepth 1 -type d -name "${FT_DEFAULT_RUBY}*") )
 if [[ ${#_ft_default_ruby[@]} -eq 0 ]]; then
   echo "Error: the default ruby \$FT_DEFAULT_RUBY ($FT_DEFAULT_RUBY) doesn't match any known rubies."
   return 1
@@ -84,7 +84,7 @@ _ft_set_ruby() {
   if [[ -z "$pattern" ]]; then
     pattern="$FT_DEFAULT_RUBY"
   fi
-  local ruby=( $(find "$RUBIES" -type d -maxdepth 1 -name "${pattern}*") )
+  local ruby=( $(find "$RUBIES" -maxdepth 1 -type d -name "${pattern}*") )
   if [[ ${#ruby[@]} -eq 0 ]]; then
     echo "Error: No ruby matched $pattern."
   elif [[ ${#ruby[@]} -gt 1 ]]; then
@@ -99,7 +99,7 @@ _ft_set_ruby() {
 }
 
 _ft_set_from_project_file() {
-  local project_files=( $(find "$1" -type f -maxdepth 1 -name "\.ft_ruby_*") )
+  local project_files=( $(find "$1" -maxdepth 1 -type f -name "\.ft_ruby_*") )
   if [[ ${#project_files[@]} -eq 0 ]]; then
     if [[ "$1" = "/" ]]; then
       # Only switch back to the default if the current Ruby wasn't specified manually
