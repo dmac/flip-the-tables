@@ -18,7 +18,7 @@ Design goals
   without affecting other shells
 * I don't want to override any common shell functions or replace `ruby`, `irb`, `gem`, etc with shell shims
 * I want ruby switching to be *fast*
-* I want as few lines of bash as possible, because bash scripting sucks
+* I want as few lines of shell code as possible, because shell scripting sucks
 
 Features
 --------
@@ -76,7 +76,7 @@ Usage
 You use flip-the-tables by making use of the `ft` function. It includes tab completion and help (accessible
 from `ft help`), so it should be pretty easy to figure out.
 
-* `ft version` and `ft short-version` show the current Ruby (the second might be useful in a bash prompt)
+* `ft version` and `ft short-version` show the current Ruby (the second might be useful in a command prompt)
 * `ft list` shows all available Rubies and indicates which is currently in use
 * `ft 1.9` switches to the first ruby version starting with '1.9' (on my machine, 1.9.2-p290)
 
