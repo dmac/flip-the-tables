@@ -156,16 +156,6 @@ _ft_help() {
   echo 'The tab-completion should be a good hint :)'
 }
 
-if (( $_ft_shell_bash )); then
-  shopt -s progcomp
-fi
-
-_ft_complete_list() {
-  local option
-  for option in $(_ft_ruby_list); do echo "$option"; done
-  for option in version short-version list help; do echo $option; done
-}
-
 ft() {
   if [[ "$#" -ne 1 ]]; then
     _ft_help
@@ -199,6 +189,18 @@ ft() {
   fi
 }
 
+
+_ft_complete_list() {
+  local option
+  for option in $(_ft_ruby_list); do echo "$option"; done
+  for option in version short-version list help; do echo $option; done
+}
+
+_ft_zsh_completion() {
+  compadd $(_ft_ruby_list)
+  compadd version short-version list help
+}
+
 _ft_bash_completion() {
   COMPREPLY=()
   local current_word=${COMP_WORDS[COMP_CWORD]}
@@ -206,4 +208,9 @@ _ft_bash_completion() {
   return 0
 }
 
-(( $_ft_shell_bash )) && complete -F _ft_completion ft
+if (( $_ft_shell_bash )); then
+  shopt -s progcomp
+  complete -F _ft_bash_completion ft
+elif (( $_ft_shell_zsh )); then
+  compdef _ft_zsh_completion ft
+fi
