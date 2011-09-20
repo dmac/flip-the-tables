@@ -50,7 +50,7 @@ if [[ -z "$FT_DEFAULT_RUBY" ]]; then
 fi
 
 # Push the flip-the-tables ruby to the front of the path
-_ft_default_ruby=( $(find "$RUBIES" -maxdepth 1 -type d -name "${FT_DEFAULT_RUBY}*") )
+_ft_default_ruby=( $(find "$RUBIES" -mindepth 1 -maxdepth 1 -type d -name "${FT_DEFAULT_RUBY}*") )
 if [[ ${#_ft_default_ruby[@]} -eq 0 ]]; then
   echo "Error: the default ruby \$FT_DEFAULT_RUBY ($FT_DEFAULT_RUBY) doesn't match any known rubies."
   return 1
@@ -78,7 +78,7 @@ fi
 
 # Get the full list of versions
 _ft_ruby_list() {
-  echo $(for f in $(find "$RUBIES" -maxdepth 1 -type d | grep -v "$RUBIES$"); do basename "$f"; done)
+  echo $(for f in $(find "$RUBIES" -mindepth 1 -maxdepth 1 -type d); do basename "$f"; done)
 }
 
 # Swap out ruby versions by replacing $RUBIES/<ruby1>/bin with $RUBIES/<ruby2>/bin
