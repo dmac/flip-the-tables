@@ -7,8 +7,7 @@ versions should be a trivial task best solved in the simplest manner possible. I
 [this blog post](http://chris.mowforth.com/si-because-rvm-and-rbenv-are-overkill), although I am using a very
 different approach.
 
-**NOTE: I hacked this up in an hour very late one night. I haven't gone through and scrubbed it. If it breaks
-everything you love, it's not my fault.**
+flip-the-tables works with Bash and Zsh.
 
 Design goals
 ------------
@@ -17,7 +16,7 @@ Design goals
 * I want the ruby version to stay the same in my shell until I change it, and I want to change my version
   without affecting other shells
 * I don't want to override any common shell functions or replace `ruby`, `irb`, `gem`, etc with shell shims
-* I want ruby switching to be *fast*
+* I don't want to introduce slow operations into my workflow
 * I want as few lines of shell code as possible, because shell scripting sucks
 
 Features
@@ -59,7 +58,7 @@ your ruby versions using Sam Stephenson's excellent [ruby-build](https://github.
 They should each be in folders with their names; e.g. `1.9.2-p290/`.
 
 Next, download `ft.sh` from this repo and put it somewhere on your machine. Add the following lines to your
-`.bash_profile` or `.bashrc`:
+shell rc file of choice (e.g. `.bash_profile`, `.bashrc`, or `.zshrc`):
 
     export RUBIES=$HOME/.rubies
     export FT_DEFAULT_RUBY='1.9.2-p290'

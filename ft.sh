@@ -30,8 +30,7 @@ if [[ -n "$BASH_VERSION" ]]; then
 elif [[ -n "$ZSH_VERSION" ]]; then
   export _ft_shell_zsh=1
 else
-  echo "Only bash and zsh are supported."
-  return 1
+  echo "Warning: only bash and zsh have been tested with flip-the-tables."
 fi
 
 if [[ -z "$RUBIES" ]]; then
@@ -64,8 +63,12 @@ elif [[ ${#_ft_default_ruby[@]} -gt 1 ]]; then
   for r in "${_ft_default_ruby[@]}"; do echo "$r"; done
   return 1
 fi
-(( $_ft_shell_bash )) && export PATH="${_ft_default_ruby[0]}/bin:$PATH"
-(( $_ft_shell_zsh )) && export PATH="${_ft_default_ruby[1]}/bin:$PATH"
+
+if (( $_ft_shell_zsh )); then
+  export PATH="${_ft_default_ruby[1]}/bin:$PATH"
+else
+  export PATH="${_ft_default_ruby[0]}/bin:$PATH"
+fi
 
 # Get a usable readlink
 export _ft_readlink=readlink
@@ -108,8 +111,11 @@ _ft_set_ruby() {
     for r in "${rubies[@]}"; do basename "$r"; done
     return 1
   fi
-  (( $_ft_shell_bash )) && local ruby="${rubies[0]}"
-  (( $_ft_shell_zsh )) && local ruby="${rubies[1]}"
+  if (( $_ft_shell_zsh )); then
+    local ruby="${rubies[1]}"
+  else
+    local ruby="${rubies[0]}"
+  fi
   if [[ "$(dirname "$current")" != "$ruby" ]]; then
     echo -e "\033[01;32mNow using ruby $(basename "$ruby").\033[39m"
     replace_path "$PATH" "$current" "$ruby/bin"
@@ -131,11 +137,17 @@ _ft_set_from_project_file() {
       _ft_set_from_project_file "$(dirname "$1")"
     fi
   elif [[ ${#project_files[@]} -eq 1 ]]; then
-    (( $_ft_shell_bash )) && local full_project_file="$(${_ft_readlink} -f "${project_files[0]}")"
-    (( $_ft_shell_zsh )) && local full_project_file="$(${_ft_readlink} -f "${project_files[1]}")"
+    if (( $_ft_shell_zsh )); then
+      local full_project_file="$(${_ft_readlink} -f "${project_files[1]}")"
+    else
+      local full_project_file="$(${_ft_readlink} -f "${project_files[0]}")"
+    fi
     if [[ "${full_project_file}" != "${_ft_project_file}" ]]; then
-      (( $_ft_shell_bash )) && local file="$(basename "${project_files[0]}")"
-      (( $_ft_shell_zsh )) && local file="$(basename "${project_files[1]}")"
+      if (( $_ft_shell_zsh )); then
+        local file="$(basename "${project_files[1]}")"
+      else
+        local file="$(basename "${project_files[0]}")"
+      fi
       echo "Using flip-the-tables project file $1/$file"
       _ft_set_ruby "" "${file#\.ft_ruby_}" "file"
       export _ft_project_file="${full_project_file}"
