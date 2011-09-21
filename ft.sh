@@ -39,6 +39,11 @@ if [[ -z "$RUBIES" ]]; then
   return 1
 fi
 
+if [[ ! -d "$RUBIES" ]]; then
+  echo '$RUBIES must point to a directory containing your installed rubies.'
+  return 1
+fi
+
 if [[ -n "$GEM_HOME" || -n "$GEM_PATH" ]]; then
   echo '$GEM_HOME and $GEM_PATH should not be set if you use flip-the-tables'
   return 1
