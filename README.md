@@ -67,6 +67,14 @@ shell rc file of choice (e.g. `.bash_profile`, `.bashrc`, or `.zshrc`):
 Notice that in the first line you should substitute your chosen location, and in the second you should
 substitute your desired default Ruby.
 
+In addition, if you're using zsh you'll need to add a call to `_ft_prompt_command` to your `precmd`. It should
+look like this:
+
+    function precmd() {
+      # Possibly other stuff here -- make sure you don't blow away an existing precmd
+      _ft_prompt_command
+    }
+
 Open up a new shell or source your rc files and you're all set.
 
 Usage

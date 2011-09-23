@@ -165,7 +165,7 @@ _ft_prompt_command() {
   fi
 }
 
-export PROMPT_COMMAND='_ft_prompt_command;'"$PROMPT_COMMAND"
+(( $_ft_shell_bash )) && export PROMPT_COMMAND='_ft_prompt_command;'"$PROMPT_COMMAND"
 
 _ft_help() {
   echo 'flip-the-tables: easily switch ruby paths around.'
