@@ -169,7 +169,7 @@ _ft_prompt_command() {
 
 _ft_help() {
   echo 'flip-the-tables: easily switch ruby paths around.'
-  echo 'Usage: ft [version|version-short|list|<ruby-version>]'
+  echo 'Usage: ft [version|short-version|list|<ruby-version>]'
   echo 'The tab-completion should be a good hint :)'
 }
 
